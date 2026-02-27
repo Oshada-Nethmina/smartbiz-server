@@ -9,12 +9,17 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Customer {
+public class InvoiceItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long customerId;
-    private String name;
-    private String address;
-    private String email;
+    private Long invoiceItemId;
+
+    private Double price;
+    private String quantity;
+
+    @ManyToOne
+    @JoinColumn(name = "sales_sales_id")
+    private Sales sales;
+
 
 }
