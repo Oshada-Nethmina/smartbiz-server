@@ -16,12 +16,15 @@ public class InvoiceItem {
 
     private Double price;
     private String quantity;
+    private Double subTotal;
 
     @ManyToOne
     @JoinColumn(name = "sales_sales_id")
     private Sales sales;
 
-    private
+    @ManyToOne
+    @JoinColumn(name = "product_product_id")
+    private Product product;
 
 
 }
