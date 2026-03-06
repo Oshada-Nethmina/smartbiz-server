@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface AIRequestRepo extends JpaRepository<AIRequest,Long> {
-    List<AIRequest> findByBusinessId(Long businessId);
-    List<AIRequest> findByBusinessIdOrderByCreatedAtDesc(Long businessId);
+    List<AIRequest> findByBusinessBusinessId(Long businessId);
+    List<AIRequest> findByBusinessBusinessIdOrderByCreatedAtDesc(Long businessId);
     long countByCreatedAtAfter(LocalDateTime since);
 }
