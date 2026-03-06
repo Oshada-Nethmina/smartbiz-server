@@ -7,5 +7,5 @@ import java.util.List;
 import java.util.Optional;
 
 public interface InvoiceItemRepo extends JpaRepository<InvoiceItem,Long> {
-    List<InvoiceItem> findBySalesId(Long salesId);
+    List<InvoiceItem> findBySalesSalesId(Long salesId);
 }
