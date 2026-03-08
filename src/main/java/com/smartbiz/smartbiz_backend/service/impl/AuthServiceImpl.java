@@ -50,7 +50,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     private UserResponseDto toUserResponse(User user) {
-        return UserResponseDto.builder().id(user.getUserId()).name(user.getName()).email(user.getEmail())
+        return UserResponseDto.builder().id(user.getUserId() ).name(user.getName()).email(user.getEmail())
                 .role(user.getRole()).businessId(user.getBusiness() != null ? user.getBusiness().getBusinessId() : null)
                 .businessName(user.getBusiness() != null ? user.getBusiness().getName() : null).build();
     }
