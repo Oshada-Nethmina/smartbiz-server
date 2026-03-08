@@ -1,5 +1,6 @@
 package com.smartbiz.smartbiz_backend.security;
 
+import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import io.jsonwebtoken.Jwts;
@@ -11,11 +12,16 @@ import java.util.Date;
 
 @Component
 public class JwtUtils {
-    @Value("${app.jwt.secret}") private String secret;
-    @Value("${app.jwt.expiration}") private long expiration;
 
+    @Value("${app.jwt.secret}")
+    private String secret;
+
+    @Value("${app.jwt.expiration}")
+    private long expiration;
+
+    // Generate secure key from secret string
     private SecretKey key() {
-        return Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
+        return Keys.hmacShaKeyFor(secret.getBytes());
     }
 
     public String generateToken(String email) {
@@ -23,7 +29,7 @@ public class JwtUtils {
                 .subject(email)
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + expiration))
-                .signWith(key())
+                .signWith(key(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
