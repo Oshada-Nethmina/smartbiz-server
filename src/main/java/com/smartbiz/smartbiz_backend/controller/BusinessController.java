@@ -9,13 +9,15 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@Data
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/business")
 public class BusinessController {
@@ -34,6 +36,8 @@ public class BusinessController {
         }
     }
 
+    @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<List<BusinessResponse>>> getAll(){
         List<BusinessResponse> business = businessService.getAll();
         return ResponseEntity.ok(ApiResponse.ok(business));
