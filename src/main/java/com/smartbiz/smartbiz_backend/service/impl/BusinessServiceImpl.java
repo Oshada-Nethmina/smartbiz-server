@@ -35,7 +35,6 @@ public class BusinessServiceImpl implements BusinessService {
     }
 
     @Override
-    @PreAuthorize("hasRole('ADMIN')")
     public List<BusinessResponse> getAll() {
         return businessRepo.findAll()
                 .stream()
