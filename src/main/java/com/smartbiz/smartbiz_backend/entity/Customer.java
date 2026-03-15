@@ -1,6 +1,7 @@
 package com.smartbiz.smartbiz_backend.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,4 +18,9 @@ public class Customer {
     private String address;
     private String email;
 
+    public Customer(@NotBlank String name, String email, String address) {
+        	this.name = name;
+        	this.email = email;
+        	this.address = address;
+    }
 }
