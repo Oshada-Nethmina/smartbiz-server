@@ -25,4 +25,13 @@ public class CustomerController {
         CustomerResponse save = customerService.saveCustomer(customerRequest);
         return ResponseEntity.ok(ApiResponse.ok(save));
     }
+
+    @PostMapping("/update")
+    public ResponseEntity<Void> updateCustomer (@RequestBody CustomerRequest customerRequest){
+        boolean update = customerService.updateCustomer(customerRequest);
+        if (update){
+            return new ResponseEntity<>(HttpStatus.OK);
+        }else
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
 }
