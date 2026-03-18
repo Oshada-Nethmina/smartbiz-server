@@ -16,4 +16,5 @@ public class CustomerRequest {
     private String phoneNumber;
     private String address;
     private Long businessId;
+    private Long customerId;
 }

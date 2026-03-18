@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface CustomerService {
     CustomerResponse saveCustomer (CustomerRequest customerRequest);
-    CustomerResponse updateCustomer (CustomerRequest customerRequest);
+    boolean updateCustomer (CustomerRequest customerRequest);
     boolean deleteCustomer (Long id);
     List<CustomerResponse> getAllCustomers();
 }

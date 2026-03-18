@@ -23,13 +23,20 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public CustomerResponse updateCustomer(CustomerRequest customerRequest) {
-        return null;
+    public boolean updateCustomer(CustomerRequest customerRequest) {
+        Customer update = customerRepo.findById(customerRequest.getCustomerId()).orElseThrow(() -> new RuntimeException("Customer not found"));
+        update.setName(customerRequest.getName());
+        update.setEmail(customerRequest.getEmail());
+        update.setAddress(customerRequest.getAddress());
+        customerRepo.save(update);
+        return true;
     }
 
     @Override
     public boolean deleteCustomer(Long id) {
-        return false;
+        Customer delete = customerRepo.findById(id).orElseThrow();
+        customerRepo.delete(delete);
+        return true;
     }
 
     @Override
