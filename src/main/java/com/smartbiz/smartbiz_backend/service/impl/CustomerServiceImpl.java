@@ -41,6 +41,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public List<CustomerResponse> getAllCustomers() {
-        return List.of();
+        List<Customer> allCustomers = customerRepo.findAll();
+        return List.of((CustomerResponse) allCustomers);
     }
 }
