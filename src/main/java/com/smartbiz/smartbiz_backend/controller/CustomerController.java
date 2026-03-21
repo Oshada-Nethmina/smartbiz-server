@@ -20,12 +20,12 @@ public class CustomerController {
     private final CustomerService customerService;
 
     @PostMapping("/save")
-    public ResponseEntity<ApiResponse<CustomerResponse>> saveCustomer(@Valid@RequestBody CustomerRequest customerRequest){
+    public ResponseEntity<ApiResponse<CustomerResponse>> saveCustomer(@Valid @RequestBody CustomerRequest customerRequest){
         CustomerResponse save = customerService.saveCustomer(customerRequest);
         return ResponseEntity.ok(ApiResponse.ok(save));
     }
 
-    @PostMapping("/update")
+    @PutMapping("/update")
     public ResponseEntity<Void> updateCustomer (@RequestBody CustomerRequest customerRequest){
         boolean update = customerService.updateCustomer(customerRequest);
         if (update){
@@ -34,7 +34,7 @@ public class CustomerController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @PostMapping("/delete/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteCustomer (@PathVariable Long id){
         boolean delete = customerService.deleteCustomer(id);
         if (delete){
@@ -44,7 +44,7 @@ public class CustomerController {
         }
     }
 
-    @PostMapping("/getAll")
+    @GetMapping("/getAll")
     public ResponseEntity<List<CustomerResponse>> getAllCustomers (){
         List<CustomerResponse> customers = customerService.getAllCustomers();
         return new ResponseEntity<>(customers, HttpStatus.OK);
