@@ -34,4 +34,7 @@ public class Product {
     private LocalDateTime createdAt;
     @UpdateTimestamp
     private LocalDateTime updatedAt;
+
+    public Product(String name, double price, double price1, String category) {
+    }
 }
