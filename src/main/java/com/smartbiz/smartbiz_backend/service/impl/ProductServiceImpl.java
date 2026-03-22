@@ -17,7 +17,8 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductResponse saveProduct(ProductRequest productRequest) {
-        return null;
+        Product save = productRepo.save(new Product(productRequest.getName(), productRequest.getPrice(), productRequest.getQuantity(), productRequest.getCategory()));
+        return new ProductResponse(save.getName(), save.getCategory(), save.getQuantity(),save.getCost(), save.getCreatedAt(),save.getProductId());
     }
 
     @Override
