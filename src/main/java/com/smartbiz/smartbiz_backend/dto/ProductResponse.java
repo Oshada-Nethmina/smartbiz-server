@@ -20,4 +20,9 @@ public class ProductResponse {
     private String supplierName;
     private LocalDateTime createdAt;
 
+    public ProductResponse(String name, String category, Integer quantity, Double cost, LocalDateTime createdAt, Long productId) {
+
+    }
+
+
 }
