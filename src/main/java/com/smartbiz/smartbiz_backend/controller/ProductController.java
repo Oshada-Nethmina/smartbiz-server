@@ -24,9 +24,9 @@ public class ProductController {
         return ResponseEntity.ok(ApiResponse.ok(save));
     }
 
-    @PutMapping("/update/{id}")
-    public ResponseEntity<Void> updateProduct (@PathVariable Long id) {
-        boolean update = productService.updateProduct(id);
+    @PutMapping("/update/business/{businessId}/{productId}")
+    public ResponseEntity<Void> updateProduct (@PathVariable Long businessId, @PathVariable Long productId, @RequestBody ProductRequest productRequest) {
+        boolean update = productService.updateProduct(businessId, productId,productRequest);
         if (update) {
             return new ResponseEntity<>(HttpStatus.OK);
         }else {
@@ -34,9 +34,9 @@ public class ProductController {
         }
     }
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteProduct (@PathVariable Long id) {
-        boolean delete = productService.deleteProduct(id);
+    @DeleteMapping("/delete/business/{businessId}/{productId}")
+    public ResponseEntity<Void> deleteProduct (@PathVariable Long businessId, @PathVariable Long productId) {
+        boolean delete = productService.deleteProduct(businessId, productId);
         if (delete) {
             return new ResponseEntity<>(HttpStatus.ACCEPTED);
         }else {
