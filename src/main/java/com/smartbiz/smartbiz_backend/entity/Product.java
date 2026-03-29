@@ -1,6 +1,7 @@
 package com.smartbiz.smartbiz_backend.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -35,6 +36,13 @@ public class Product {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    public Product(String name, double price, double price1, String category) {
+    public Product(String name, String category, Double cost, Integer quantity, Business business) {
+        this.name = name;
+        this.category = category;
+        this.cost = cost;
+        this.quantity = quantity;
+        this.business = business;
     }
+
+
 }
