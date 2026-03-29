@@ -1,5 +1,6 @@
 package com.smartbiz.smartbiz_backend.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,9 +11,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class ProductRequest {
-    private String name;
+    @NotBlank private String name;
     private String category;
-    private Double price;
+    private Double cost;
     private Integer quantity;
     private Long businessId;
+    private Long supplierId;
 }

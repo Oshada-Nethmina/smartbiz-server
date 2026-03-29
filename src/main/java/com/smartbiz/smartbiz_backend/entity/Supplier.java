@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -20,10 +21,10 @@ public class Supplier {
     private String phone;
     private String email;
 
-    @ManyToOne
-    @JoinColumn(name = "business_business_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "businessId")
     private Business business;
 
-    private LocalDateTime createdAt;
+    @CreationTimestamp private LocalDateTime createdAt;
 
 }

@@ -2,7 +2,9 @@ package com.smartbiz.smartbiz_backend.service.impl;
 
 import com.smartbiz.smartbiz_backend.dto.CustomerRequest;
 import com.smartbiz.smartbiz_backend.dto.CustomerResponse;
+import com.smartbiz.smartbiz_backend.dto.ProductResponse;
 import com.smartbiz.smartbiz_backend.entity.Customer;
+import com.smartbiz.smartbiz_backend.entity.Product;
 import com.smartbiz.smartbiz_backend.repository.CustomerRepo;
 import com.smartbiz.smartbiz_backend.service.CustomerService;
 import lombok.RequiredArgsConstructor;
@@ -42,6 +44,17 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public List<CustomerResponse> getAllCustomers() {
         List<Customer> allCustomers = customerRepo.findAll();
-        return List.of((CustomerResponse) allCustomers);
+        return allCustomers.stream()
+                .map(this::mapToResponse)
+                .toList();
+    }
+
+    private CustomerResponse mapToResponse(Customer customer) {
+        return CustomerResponse.builder()
+                .id(customer.getCustomerId())
+                .name(customer.getName())
+                .address(customer.getAddress())
+                .email(customer.getEmail())
+                .build();
     }
 }
