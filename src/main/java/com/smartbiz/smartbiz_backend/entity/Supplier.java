@@ -1,6 +1,7 @@
 package com.smartbiz.smartbiz_backend.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,7 +18,7 @@ public class Supplier {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long supplierId;
 
-    private String Name;
+    private String name;
     private String phone;
     private String email;
 
@@ -27,4 +28,10 @@ public class Supplier {
 
     @CreationTimestamp private LocalDateTime createdAt;
 
+    public Supplier(@NotBlank String name, String email, String phone, Business business) {
+        this.name = name;
+        this.phone = phone;
+        this.email = email;
+        this.business = business;
+    }
 }
