@@ -2,6 +2,7 @@ package com.smartbiz.smartbiz_backend.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,22 +10,22 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Builder
 public class InvoiceItem {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long invoiceItemId;
 
-    private Double price;
-    private String quantity;
-    private Double subTotal;
-
-    @ManyToOne
-    @JoinColumn(name = "sales_sales_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "sales_id")
     private Sales sales;
 
-    @ManyToOne
-    @JoinColumn(name = "product_product_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id")
     private Product product;
+
+    private Integer quantity;
+    private Double price;
+    private Double subtotal;
 
 
 }
