@@ -39,6 +39,7 @@ public class SalesController {
         }
     }
 
+    @GetMapping("/getAll")
     public ResponseEntity<ApiResponse<List<SalesResponse>>> getAllSales () {
         List<SalesResponse> allSales = salesService.getAllSales();
         return ResponseEntity.ok(ApiResponse.ok(allSales));
