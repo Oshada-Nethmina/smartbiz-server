@@ -2,10 +2,8 @@ package com.smartbiz.smartbiz_backend.controller;
 
 import com.smartbiz.smartbiz_backend.dto.ApiResponse;
 import com.smartbiz.smartbiz_backend.dto.BusinessResponse;
-import com.smartbiz.smartbiz_backend.entity.Business;
 import com.smartbiz.smartbiz_backend.repository.BusinessRepo;
 import com.smartbiz.smartbiz_backend.service.BusinessService;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
