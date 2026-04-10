@@ -1,7 +1,6 @@
 package com.smartbiz.smartbiz_backend.controller;
 
 import com.smartbiz.smartbiz_backend.dto.*;
-import com.smartbiz.smartbiz_backend.repository.FinanceRepo;
 import com.smartbiz.smartbiz_backend.service.FinanceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

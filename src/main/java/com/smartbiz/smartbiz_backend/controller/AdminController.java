@@ -2,12 +2,10 @@ package com.smartbiz.smartbiz_backend.controller;
 
 import com.smartbiz.smartbiz_backend.dto.AdminStateResponse;
 import com.smartbiz.smartbiz_backend.dto.ApiResponse;
-import com.smartbiz.smartbiz_backend.entity.Admin;
 import com.smartbiz.smartbiz_backend.repository.AIRequestRepo;
 import com.smartbiz.smartbiz_backend.repository.BusinessRepo;
 import com.smartbiz.smartbiz_backend.repository.SubscriptionRepo;
 import com.smartbiz.smartbiz_backend.repository.UserRepo;
-import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
