@@ -1,9 +1,6 @@
 package com.smartbiz.smartbiz_backend.service.impl;
 
-import com.smartbiz.smartbiz_backend.dto.SalesItemRequest;
-import com.smartbiz.smartbiz_backend.dto.SalesItemResponse;
-import com.smartbiz.smartbiz_backend.dto.SalesRequest;
-import com.smartbiz.smartbiz_backend.dto.SalesResponse;
+import com.smartbiz.smartbiz_backend.dto.*;
 import com.smartbiz.smartbiz_backend.entity.*;
 import com.smartbiz.smartbiz_backend.repository.*;
 import com.smartbiz.smartbiz_backend.service.SalesService;
@@ -36,7 +33,7 @@ public class SalesServiceImpl implements SalesService {
         Sales sales = salesRepo.save(Sales.builder()
                 .business(business).customer(customer).user(user)
                 .paymentMethod(salesRequest.getPaymentMethod()).totalAmount(salesRequest.getTotalAmount())
-                .salesDate(salesRequest.getSalesDate() != null ? salesRequest.getSalesDate() : LocalDateTime.now()).build());
+                .salesDate(salesRequest.getSalesDate() != null ? salesRequest.getSalesDate().atStartOfDay() : LocalDateTime.now()).build());
 
         if (salesRequest.getItems() != null) {
             salesRequest.getItems().forEach(item -> {
@@ -107,7 +104,7 @@ public class SalesServiceImpl implements SalesService {
         sales.setTotalAmount(salesRequest.getTotalAmount());
 
         if (salesRequest.getSalesDate() != null) {
-            sales.setSalesDate(salesRequest.getSalesDate());
+            sales.setSalesDate(salesRequest.getSalesDate().atStartOfDay());
         }
 
         // 5. Save NEW items + reduce stock again
@@ -158,6 +155,16 @@ public class SalesServiceImpl implements SalesService {
         return allSales.stream()
                 .map(this::toSalesResponse)
                 .toList();
+    }
+
+    @Override
+    public SalesSummaryResponse getSalesSummary(Long businessId, String period) {
+        return SalesSummaryResponse.builder()
+                .totalRevenue(0.0)
+                .change(0.0)
+                .chartData(new ArrayList<>())
+                .recentSales(new ArrayList<>())
+                .build();
     }
 
     private SalesResponse toSalesResponse(Sales sales) {

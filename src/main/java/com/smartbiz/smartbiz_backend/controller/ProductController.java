@@ -23,8 +23,13 @@ public class ProductController {
         ProductResponse save = productService.saveProduct(productRequest);
         return ResponseEntity.ok(ApiResponse.ok(save));
     }
+    @GetMapping("/low-stock")
+    public ResponseEntity<ApiResponse<List<ProductResponse>>> getLowStock(@RequestParam Long businessId) {
+        return ResponseEntity.ok(ApiResponse.ok(productService.getLowStock(businessId)));
+    }
 
-    @PutMapping("/update/business/{businessId}/{productId}")
+
+    @PutMapping("/update/{businessId}/{productId}")
     public ResponseEntity<Void> updateProduct (@PathVariable Long businessId, @PathVariable Long productId, @RequestBody ProductRequest productRequest) {
         boolean update = productService.updateProduct(businessId, productId,productRequest);
         if (update) {
@@ -34,7 +39,7 @@ public class ProductController {
         }
     }
 
-    @DeleteMapping("/delete/business/{businessId}/{productId}")
+    @DeleteMapping("/delete/{businessId}/{productId}")
     public ResponseEntity<Void> deleteProduct (@PathVariable Long businessId, @PathVariable Long productId) {
         boolean delete = productService.deleteProduct(businessId, productId);
         if (delete) {
@@ -48,5 +53,14 @@ public class ProductController {
     public ResponseEntity<List<ProductResponse>> getAllProduct () {
         List<ProductResponse> allProducts = productService.getAllProduct();
         return new ResponseEntity<>(allProducts, HttpStatus.OK);
+    }
+
+    @GetMapping("/search/{productId}")
+    public ResponseEntity<ApiResponse<ProductResponse>> searchProduct(
+            @PathVariable Long productId) {
+
+        ProductResponse product = productService.findProduct(productId);
+
+        return ResponseEntity.ok(ApiResponse.ok(product));
     }
 }

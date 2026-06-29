@@ -3,6 +3,7 @@ package com.smartbiz.smartbiz_backend.controller;
 import com.smartbiz.smartbiz_backend.dto.ApiResponse;
 import com.smartbiz.smartbiz_backend.dto.SalesRequest;
 import com.smartbiz.smartbiz_backend.dto.SalesResponse;
+import com.smartbiz.smartbiz_backend.dto.SalesSummaryResponse;
 import com.smartbiz.smartbiz_backend.service.SalesService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,8 @@ public class SalesController {
 
     @PostMapping("/save")
     public ResponseEntity<ApiResponse<SalesResponse>> saveSales(@RequestBody SalesRequest salesRequest) {
+        System.out.println("===== SAVE SALE =====");
+        System.out.println(salesRequest);
         SalesResponse save = salesService.saveSales(salesRequest);
         return ResponseEntity.ok(ApiResponse.ok(save));
     }
@@ -37,6 +40,17 @@ public class SalesController {
         }else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    }
+
+    @GetMapping("/summary")
+    public ResponseEntity<ApiResponse<SalesSummaryResponse>> getSummary(
+            @RequestParam Long businessId,
+            @RequestParam String period) {
+
+        SalesSummaryResponse summary =
+                salesService.getSalesSummary(businessId, period);
+
+        return ResponseEntity.ok(ApiResponse.ok(summary));
     }
 
     @GetMapping("/getAll")

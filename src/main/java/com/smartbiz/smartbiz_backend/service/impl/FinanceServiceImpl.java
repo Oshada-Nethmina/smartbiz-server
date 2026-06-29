@@ -1,5 +1,6 @@
 package com.smartbiz.smartbiz_backend.service.impl;
 
+import com.smartbiz.smartbiz_backend.dto.ExpenseSummaryResponse;
 import com.smartbiz.smartbiz_backend.dto.FinanceRequest;
 import com.smartbiz.smartbiz_backend.dto.FinanceResponse;
 import com.smartbiz.smartbiz_backend.entity.Business;
@@ -11,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,7 +30,11 @@ public class FinanceServiceImpl implements FinanceService {
                 .amount(financeRequest.getAmount())
                 .category(financeRequest.getCategory())
                 .title(financeRequest.getTitle())
-                .createdAt(Optional.ofNullable(financeRequest.getDate()).orElse(LocalDateTime.now()))
+                .createdAt(
+                        financeRequest.getDate() != null
+                                ? financeRequest.getDate().atStartOfDay()
+                                : LocalDateTime.now()
+                )
                 .business(business) // ✅ now it's valid
                 .build();
 
@@ -70,6 +76,15 @@ public class FinanceServiceImpl implements FinanceService {
         return allFinances.stream()
                 .map(this::toResponseFinance)
                 .toList();
+    }
+
+    @Override
+    public ExpenseSummaryResponse getExpenseSummary(Long businessId, String period) {
+        return ExpenseSummaryResponse.builder()
+                .totalExpenses(0.0)
+                .change(0.0)
+                .chartData(new ArrayList<>())
+                .build();
     }
 
     public FinanceResponse toResponseFinance (Finance finance) {

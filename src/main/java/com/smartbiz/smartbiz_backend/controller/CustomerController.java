@@ -25,28 +25,31 @@ public class CustomerController {
         return ResponseEntity.ok(ApiResponse.ok(save));
     }
 
-    @PutMapping("/update")
-    public ResponseEntity<Void> updateCustomer (@RequestBody CustomerRequest customerRequest){
-        boolean update = customerService.updateCustomer(customerRequest);
+    @PutMapping("/update/{id}")
+    public ResponseEntity<Void> updateCustomer (@PathVariable Long id,@Valid @RequestBody CustomerRequest customerRequest){
+        boolean update = customerService.updateCustomer(id,customerRequest);
         if (update){
             return new ResponseEntity<>(HttpStatus.OK);
         }else
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
+    @GetMapping("/find/{id}")
+    public ResponseEntity<ApiResponse<CustomerResponse>> findCustomer(@PathVariable Long id) {
+        CustomerResponse customer = customerService.findCustomer(id);
+        return ResponseEntity.ok(ApiResponse.ok(customer));
+    }
+
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteCustomer (@PathVariable Long id){
-        boolean delete = customerService.deleteCustomer(id);
-        if (delete){
-            return new ResponseEntity<>(HttpStatus.ACCEPTED);
-        }else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity<Void> deleteCustomer(@PathVariable Long id) {
+        customerService.deleteCustomer(id);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/getAll")
-    public ResponseEntity<List<CustomerResponse>> getAllCustomers (){
-        List<CustomerResponse> customers = customerService.getAllCustomers();
-        return new ResponseEntity<>(customers, HttpStatus.OK);
+    public ResponseEntity<ApiResponse<List<CustomerResponse>>> getAllCustomers (){
+        return ResponseEntity.ok(
+                ApiResponse.ok(customerService.getAllCustomers())
+        );
     }
 }
