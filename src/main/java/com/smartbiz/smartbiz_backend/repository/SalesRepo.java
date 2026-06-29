@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface SalesRepo extends JpaRepository<Sales,Long> {
-    List<Sales> findByBusinessBusinessId(Long businessId);
+    List<Sales> findByBusiness_BusinessId(Long businessId);
     List<Sales> findByBusinessBusinessIdOrderBySalesDateDesc(Long businessId);
 
     @Query("""

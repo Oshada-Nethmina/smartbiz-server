@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
@@ -15,7 +16,7 @@ public class FinanceRequest {
     private Double amount;
     private String title;
     private String category;
-    private LocalDateTime date;
+    private LocalDate date;
     private String description;
     private Long businessId;
     private Long userId;

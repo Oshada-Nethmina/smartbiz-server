@@ -24,7 +24,7 @@ public class BusinessController {
     private final BusinessService businessService;
 
     @GetMapping("/find/{id}")
-    public ResponseEntity<ApiResponse<BusinessResponse>> findById(@PathVariable Long id){
+    public ResponseEntity<ApiResponse<BusinessResponse>> findById(@PathVariable Long id) {
         BusinessResponse business = businessService.findById(id);
         if (business != null) {
             return ResponseEntity.ok(ApiResponse.ok(business));
@@ -36,7 +36,7 @@ public class BusinessController {
 
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ApiResponse<List<BusinessResponse>>> getAll(){
+    public ResponseEntity<ApiResponse<List<BusinessResponse>>> getAll() {
         List<BusinessResponse> business = businessService.getAll();
         return ResponseEntity.ok(ApiResponse.ok(business));
     }
