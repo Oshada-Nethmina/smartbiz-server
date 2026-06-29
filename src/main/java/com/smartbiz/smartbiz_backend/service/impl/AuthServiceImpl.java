@@ -4,8 +4,10 @@ import com.smartbiz.smartbiz_backend.dto.AuthResponseDto;
 import com.smartbiz.smartbiz_backend.dto.LoginRequestDto;
 import com.smartbiz.smartbiz_backend.dto.RegisterRequestDto;
 import com.smartbiz.smartbiz_backend.dto.UserResponseDto;
+import com.smartbiz.smartbiz_backend.entity.Admin;
 import com.smartbiz.smartbiz_backend.entity.Business;
 import com.smartbiz.smartbiz_backend.entity.User;
+import com.smartbiz.smartbiz_backend.repository.AdminRepo;
 import com.smartbiz.smartbiz_backend.repository.BusinessRepo;
 import com.smartbiz.smartbiz_backend.repository.UserRepo;
 import com.smartbiz.smartbiz_backend.security.JwtUtils;
@@ -21,6 +23,7 @@ import org.springframework.stereotype.Service;
 public class AuthServiceImpl implements AuthService {
 
     private final UserRepo userRepo;
+    private final AdminRepo adminRepo;
     private final BusinessRepo businessRepo;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtils jwtUtils;
@@ -29,28 +32,103 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public AuthResponseDto login(LoginRequestDto loginRequest) {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
-        User user = userRepo.findByEmail(loginRequest.getEmail()).orElseThrow();
-        String token = jwtUtils.generateToken(user.getEmail());
-        return new AuthResponseDto(token, toUserResponse(user));
+        var adminOpt = adminRepo.findByEmail(loginRequest.getEmail());
+        var userOpt = userRepo.findByEmail(loginRequest.getEmail());
+
+        if (adminOpt.isPresent() && userOpt.isPresent()) {
+            throw new RuntimeException("Duplicate email detected. Contact system administrator.");
+        }
+
+        if (adminOpt.isPresent()) {
+            Admin admin = adminOpt.get();
+
+            if (!passwordEncoder.matches(loginRequest.getPassword(), admin.getPassword())) {
+                throw new RuntimeException("Invalid credentials");
+            }
+
+            String token = jwtUtils.generateToken(admin.getEmail());
+            return new AuthResponseDto(token, toAdminResponse(admin));
+        }
+
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+
+            if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
+                throw new RuntimeException("Invalid credentials");
+            }
+
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            loginRequest.getEmail(),
+                            loginRequest.getPassword()));
+
+            String token = jwtUtils.generateToken(user.getEmail());
+            return new AuthResponseDto(token, toUserResponse(user));
+        }
+
+        throw new RuntimeException("Invalid credentials");
     }
 
     @Override
     public AuthResponseDto register(RegisterRequestDto registerRequest) {
-        if (userRepo.existsByEmail(registerRequest.getEmail())) throw new RuntimeException("Email already in use");
-        Business business = businessRepo.save(Business.builder().name(registerRequest.getBusinessName()).address(registerRequest.getBusinessAddress()).build());
+        if (adminRepo.existsByEmail(registerRequest.getEmail())
+                || userRepo.existsByEmail(registerRequest.getEmail())) {
+            throw new RuntimeException("Email already exists");
+        }
+        String role = registerRequest.getRole() != null
+                ? registerRequest.getRole().toUpperCase()
+                : "OWNER";
+
+        if ("ADMIN".equals(role)) {
+
+            Admin admin = adminRepo.save(Admin.builder()
+                    .name(registerRequest.getName())
+                    .email(registerRequest.getEmail())
+                    .password(passwordEncoder.encode(registerRequest.getPassword()))
+                    .phone(registerRequest.getPhone())
+                    .build());
+
+            String token = jwtUtils.generateToken(admin.getEmail());
+            return new AuthResponseDto(token, toAdminResponse(admin));
+        }
+
+        Business business = businessRepo.save(Business.builder()
+                .name(registerRequest.getBusinessName())
+                .address(registerRequest.getBusinessAddress())
+                .build());
+
         User user = userRepo.save(User.builder()
                 .name(registerRequest.getName())
                 .email(registerRequest.getEmail())
                 .password(passwordEncoder.encode(registerRequest.getPassword()))
-//                .phone(registerRequest.getPhone())
-                .role("OWNER").business(business).build());
-        return new AuthResponseDto(jwtUtils.generateToken(user.getEmail()), toUserResponse(user));
+                .role("OWNER")
+                .business(business)
+                .build());
+
+        String token = jwtUtils.generateToken(user.getEmail());
+        return new AuthResponseDto(token, toUserResponse(user));
     }
 
     private UserResponseDto toUserResponse(User user) {
-        return UserResponseDto.builder().id(user.getUserId() ).name(user.getName()).email(user.getEmail())
-                .role(user.getRole()).businessId(user.getBusiness() != null ? user.getBusiness().getBusinessId() : null)
-                .businessName(user.getBusiness() != null ? user.getBusiness().getName() : null).build();
+        return UserResponseDto.builder()
+                .id(user.getUserId())
+                .name(user.getName())
+                .email(user.getEmail())
+                .role(user.getRole())
+                .businessId(user.getBusiness() != null ? user.getBusiness().getBusinessId() : null)
+                .businessName(user.getBusiness() != null ? user.getBusiness().getName() : null)
+                .build();
     }
+
+    private UserResponseDto toAdminResponse(Admin admin) {
+        return UserResponseDto.builder()
+                .id(admin.getAdminId())
+                .name(admin.getName())
+                .email(admin.getEmail())
+                .role("ADMIN")
+                .businessId(null)
+                .businessName(null)
+                .build();
+    }
+
 }

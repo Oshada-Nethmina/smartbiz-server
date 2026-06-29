@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 public class RegisterRequestDto {
     @NotBlank
     private String name;
+    private String role; // "OWNER" or "EMPLOYEE"
     @NotBlank @Email
     private String email;
     @NotBlank @Size(min = 6) private String password;
