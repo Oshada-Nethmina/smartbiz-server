@@ -1,6 +1,8 @@
 package com.smartbiz.smartbiz_backend.dto;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,9 +14,8 @@ import lombok.NoArgsConstructor;
 @Builder
 public class CustomerRequest {
     @NotBlank private String name;
-    private String email;
+    @Email @NotBlank private String email;
     private String phoneNumber;
     private String address;
-    private Long businessId;
-    private Long customerId;
+    @NotNull private Long businessId;
 }

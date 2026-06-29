@@ -13,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
@@ -23,23 +25,38 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductResponse saveProduct(ProductRequest productRequest) {
-        // 1. Get Business
         Business business = businessRepo.findById(productRequest.getBusinessId())
                 .orElseThrow(() -> new RuntimeException("Business not found"));
 
-        Supplier supplier = productRequest.getSupplierId() != null ? supplierRepo.findById(productRequest.getSupplierId()).orElse(null) : null;
+        Supplier supplier = null;
+        if (productRequest.getSupplierId() != null) {
+            supplier = supplierRepo.findById(productRequest.getSupplierId())
+                    .orElseThrow(() -> new RuntimeException("Supplier not found"));
+        }
 
         Product product = new Product();
-
         product.setName(productRequest.getName());
         product.setCategory(productRequest.getCategory());
         product.setCost(productRequest.getCost());
         product.setQuantity(productRequest.getQuantity());
-        product.setBusiness(business);  
+        product.setBusiness(business);
         product.setSupplier(supplier);
 
         Product save = productRepo.save(product);
-        return new ProductResponse(save.getProductId(), save.getName(), save.getCategory(), save.getCost(), save.getQuantity(), business.getBusinessId(), supplier != null ? supplier.getSupplierId() : null);
+
+        return ProductResponse.builder()
+                .id(save.getProductId())
+                .name(save.getName())
+                .category(save.getCategory())
+                .cost(save.getCost())
+                .quantity(save.getQuantity())
+                .supplierName(
+                        save.getSupplier() != null
+                                ? save.getSupplier().getName()
+                                : null
+                )
+                .createdAt(save.getCreatedAt())
+                .build();
     }
 
     @Override
@@ -68,6 +85,19 @@ public class ProductServiceImpl implements ProductService {
         }
         productRepo.delete(delete);
         return true;
+    }
+
+    @Override
+    public List<ProductResponse> getLowStock(Long businessId) {
+        return productRepo.findByBusiness_BusinessIdAndQuantityLessThanEqual(businessId, 20).stream().map(this::mapToResponse).collect(Collectors.toList());
+    }
+
+    @Override
+    public ProductResponse findProduct(Long productId) {
+        Product product = productRepo.findById(productId)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+
+        return mapToResponse(product);
     }
 
     @Override

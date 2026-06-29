@@ -1,22 +1,24 @@
 package com.smartbiz.smartbiz_backend.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SalesRequest {
-    private Long customerId;
+public class InvoiceResponse {
+    private Long id;
+    private Long salesId;
+    private String customerName;
+    private String customerEmail;
     private String paymentMethod;
-    private LocalDate salesDate;
     private Double totalAmount;
-    private Long businessId;
-    private Long userId;
-    private List<SalesItemRequest> items;
+    private List<SalesItemResponse> items;
+    private LocalDateTime createdAt;
 }

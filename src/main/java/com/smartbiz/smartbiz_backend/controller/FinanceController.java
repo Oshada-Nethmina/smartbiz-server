@@ -17,6 +17,7 @@ public class FinanceController {
 
     @PostMapping("/save")
     public ResponseEntity<ApiResponse<FinanceResponse>> saveFinance (@RequestBody FinanceRequest financeRequest) {
+        System.out.println("Finance endpoint reached");
         FinanceResponse save = financeService.saveFinance(financeRequest);
         return ResponseEntity.ok(ApiResponse.ok(save));
     }
@@ -49,6 +50,17 @@ public class FinanceController {
     public ResponseEntity<ApiResponse<List<FinanceResponse>>> getFinance() {
         List<FinanceResponse> allFinance = financeService.getAllFinances();
         return ResponseEntity.ok(ApiResponse.ok(allFinance));
+    }
+
+    @GetMapping("/summary")
+    public ResponseEntity<ApiResponse<ExpenseSummaryResponse>> getSummary(
+            @RequestParam Long businessId,
+            @RequestParam String period) {
+
+        ExpenseSummaryResponse summary =
+                financeService.getExpenseSummary(businessId, period);
+
+        return ResponseEntity.ok(ApiResponse.ok(summary));
     }
 
 }

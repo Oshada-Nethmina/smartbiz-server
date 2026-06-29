@@ -1,7 +1,6 @@
 package com.smartbiz.smartbiz_backend.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,10 +14,12 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Entity
 public class Product {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long productId;
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long productId;  // product_id
+
+    @Column(nullable = false)
     private String name;
+
     private String category;
     private Double cost;
     private Integer quantity;
@@ -31,18 +32,8 @@ public class Product {
     @JoinColumn(name = "supplier_id")
     private Supplier supplier;  // supplier_id FK
 
-    @CreationTimestamp
-    private LocalDateTime createdAt;
-    @UpdateTimestamp
-    private LocalDateTime updatedAt;
-
-    public Product(String name, String category, Double cost, Integer quantity, Business business) {
-        this.name = name;
-        this.category = category;
-        this.cost = cost;
-        this.quantity = quantity;
-        this.business = business;
-    }
+    @CreationTimestamp private LocalDateTime createdAt;
+    @UpdateTimestamp  private LocalDateTime updatedAt;
 
 
 }
