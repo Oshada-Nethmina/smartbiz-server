@@ -8,6 +8,7 @@ import com.smartbiz.smartbiz_backend.repository.BusinessRepo;
 import com.smartbiz.smartbiz_backend.repository.FinanceRepo;
 import com.smartbiz.smartbiz_backend.repository.SalesRepo;
 import com.smartbiz.smartbiz_backend.service.AIService;
+import com.smartbiz.smartbiz_backend.service.SubscriptionValidationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,9 +22,11 @@ public class AIServiceImpl implements AIService {
     private final FinanceRepo financeRepo;
     private final AIRequestRepo aiRequestRepo;
     private final BusinessRepo businessRepo;
+    private final SubscriptionValidationService subscriptionValidationService;
 
     @Override
     public AIResponse businessInsight(Long businessId, String question) {
+        subscriptionValidationService.validateAI(businessId);
         Business business = businessRepo.findById(businessId).orElseThrow();
         String context = buildBusinessContext(businessId, business.getName());
         String answer = openAIService.complete(
@@ -36,6 +39,7 @@ public class AIServiceImpl implements AIService {
 
     @Override
     public AIResponse generateEmail(Long businessId, String context) {
+        subscriptionValidationService.validateAI(businessId);
         String result = openAIService.complete(
                 "You are a professional email writer for a business. Write a clear, professional email based on the given context.",
                 context
@@ -46,6 +50,7 @@ public class AIServiceImpl implements AIService {
 
     @Override
     public AIResponse generateMarketingPost(Long businessId, String context) {
+        subscriptionValidationService.validateAI(businessId);
         String result = openAIService.complete(
                 "You are a creative social media content writer. Generate engaging marketing content for a small business.",
                 context
@@ -55,13 +60,15 @@ public class AIServiceImpl implements AIService {
     }
 
     @Override
-    public AIResponse summarizeInvoice(Long invoiceId) {
+    public AIResponse summarizeInvoice(Long businessId, Long invoiceId) {
+        subscriptionValidationService.validateAI(businessId);
         String result = openAIService.complete(
                 "You are a helpful assistant. Summarize this invoice in simple, clear terms for a business owner.",
                 "Invoice ID: " + invoiceId + ". Please provide a brief, plain-English summary of what this invoice represents."
         );
         return AIResponse.builder().result(result).type("INVOICE_SUMMARY").generatedAt(LocalDateTime.now()).build();
     }
+
 
     @Override
     public String buildBusinessContext(Long businessId, String bizName) {

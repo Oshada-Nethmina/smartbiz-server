@@ -9,6 +9,7 @@ import com.smartbiz.smartbiz_backend.repository.BusinessRepo;
 import com.smartbiz.smartbiz_backend.repository.ProductRepo;
 import com.smartbiz.smartbiz_backend.repository.SupplierRepo;
 import com.smartbiz.smartbiz_backend.service.ProductService;
+import com.smartbiz.smartbiz_backend.service.SubscriptionValidationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,9 +23,11 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepo productRepo;
     private final BusinessRepo businessRepo;
     private final SupplierRepo supplierRepo;
+    private final SubscriptionValidationService subscriptionValidationService;
 
     @Override
     public ProductResponse saveProduct(ProductRequest productRequest) {
+        subscriptionValidationService.validateProductLimit(productRequest.getBusinessId());
         Business business = businessRepo.findById(productRequest.getBusinessId())
                 .orElseThrow(() -> new RuntimeException("Business not found"));
 

@@ -7,7 +7,7 @@ public interface AIService {
     AIResponse businessInsight(Long businessId, String question);
     AIResponse generateEmail(Long businessId, String context);
     AIResponse generateMarketingPost(Long businessId, String context);
-    AIResponse summarizeInvoice(Long invoiceId);
+    AIResponse summarizeInvoice(Long businessId,Long invoiceId);
     String buildBusinessContext(Long businessId, String bizName);
     void saveAIRequest(Long businessId, String type, String prompt, String response);
 
