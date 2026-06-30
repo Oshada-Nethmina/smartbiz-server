@@ -4,12 +4,9 @@ import com.smartbiz.smartbiz_backend.dto.AuthResponseDto;
 import com.smartbiz.smartbiz_backend.dto.LoginRequestDto;
 import com.smartbiz.smartbiz_backend.dto.RegisterRequestDto;
 import com.smartbiz.smartbiz_backend.dto.UserResponseDto;
-import com.smartbiz.smartbiz_backend.entity.Admin;
-import com.smartbiz.smartbiz_backend.entity.Business;
-import com.smartbiz.smartbiz_backend.entity.User;
-import com.smartbiz.smartbiz_backend.repository.AdminRepo;
-import com.smartbiz.smartbiz_backend.repository.BusinessRepo;
-import com.smartbiz.smartbiz_backend.repository.UserRepo;
+import com.smartbiz.smartbiz_backend.entity.*;
+import com.smartbiz.smartbiz_backend.enums.SubscriptionStatus;
+import com.smartbiz.smartbiz_backend.repository.*;
 import com.smartbiz.smartbiz_backend.security.JwtUtils;
 import com.smartbiz.smartbiz_backend.service.AuthService;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +14,10 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +29,8 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtUtils jwtUtils;
     private final AuthenticationManager authenticationManager;
+    private final SubscriptionRepo subscriptionRepo;
+    private final SubscriptionPlanRepo subscriptionPlanRepo;
 
 
     @Override
@@ -70,6 +73,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
+    @Transactional
     public AuthResponseDto register(RegisterRequestDto registerRequest) {
         if (adminRepo.existsByEmail(registerRequest.getEmail())
                 || userRepo.existsByEmail(registerRequest.getEmail())) {
@@ -96,6 +100,22 @@ public class AuthServiceImpl implements AuthService {
                 .name(registerRequest.getBusinessName())
                 .address(registerRequest.getBusinessAddress())
                 .build());
+
+        SubscriptionPlan freePlan = subscriptionPlanRepo
+                .findByName("Free")
+                .orElseThrow(() ->
+                        new RuntimeException("Free subscription plan not found"));
+
+        subscriptionRepo.save(
+                Subscription.builder()
+                        .business(business)
+                        .plan(freePlan)
+                        .status(SubscriptionStatus.ACTIVE)
+                        .startDate(LocalDate.now())
+                        .endDate(LocalDate.now().plusMonths(1))
+                        .createdAt(LocalDateTime.now())
+                        .build()
+        );
 
         User user = userRepo.save(User.builder()
                 .name(registerRequest.getName())
