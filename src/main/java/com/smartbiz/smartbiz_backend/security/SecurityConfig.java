@@ -39,6 +39,28 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/api/v1/auth/**", "/v1/auth/**").permitAll()
+
+                                // Everyone logged in can view plans
+                                .requestMatchers(HttpMethod.GET, "/api/v1/subscription-plans/**")
+                                .hasAnyRole("OWNER", "ADMIN")
+
+// Only admins can modify plans
+                                .requestMatchers(HttpMethod.POST, "/api/v1/subscription-plans/**")
+                                .hasRole("ADMIN")
+
+                                .requestMatchers(HttpMethod.PUT, "/api/v1/subscription-plans/**")
+                                .hasRole("ADMIN")
+
+                                .requestMatchers(HttpMethod.PATCH, "/api/v1/subscription-plans/**")
+                                .hasRole("ADMIN")
+
+                                .requestMatchers(HttpMethod.DELETE, "/api/v1/subscription-plans/**")
+                                .hasRole("ADMIN")
+
+                        // Business users and admins
+                        .requestMatchers("/api/v1/subscriptions/**")
+                        .hasAnyRole("OWNER", "ADMIN")
+
                         .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )

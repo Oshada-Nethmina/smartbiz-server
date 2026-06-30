@@ -31,8 +31,8 @@ public class AIController {
     }
 
     @PostMapping("/invoice-summary/{invoiceId}")
-    public ResponseEntity<ApiResponse<AIResponse>> summarizeInvoice(@PathVariable Long invoiceId) {
-        AIResponse summary = aiService.summarizeInvoice(invoiceId);
+    public ResponseEntity<ApiResponse<AIResponse>> summarizeInvoice(@PathVariable Long invoiceId,@PathVariable Long businessId) {
+        AIResponse summary = aiService.summarizeInvoice(businessId, invoiceId);
         return ResponseEntity.ok(ApiResponse.ok(summary));
     }
 }
